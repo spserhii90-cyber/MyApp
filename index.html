@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoBid | Car Sales & Auctions</title>
+  <style>
+    :root {
+      --bg: #f5f2ec;
+      --surface: #fffdf9;
+      --text: #1d242b;
+      --muted: #69737d;
+      --accent: #c24e1d;
+      --accent-dark: #8f3410;
+      --line: rgba(29, 36, 43, 0.1);
+      --shadow: 0 24px 60px rgba(20, 30, 36, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(194, 78, 29, 0.12), transparent 30%),
+        linear-gradient(135deg, #f8f5ef, #ede6dc);
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .page {
+      width: min(1100px, calc(100% - 32px));
+      margin: 24px auto;
+      background: var(--surface);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header,
+    .hero,
+    .content,
+    .footer {
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .nav {
+      display: flex;
+      gap: 22px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 24px;
+      align-items: center;
+      padding-top: 24px;
+      padding-bottom: 40px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(194, 78, 29, 0.1);
+      color: var(--accent-dark);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.72rem;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2.8rem, 7vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+    }
+
+    .lead {
+      max-width: 560px;
+      color: var(--muted);
+      font-size: 1.02rem;
+      line-height: 1.7;
+      margin: 18px 0 28px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .button.primary {
+      background: var(--accent-dark);
+      color: #fff;
+    }
+
+    .button.secondary {
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .stat {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fff;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.45rem;
+      margin-bottom: 6px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .hero-card {
+      padding: 28px;
+      border-radius: 24px;
+      color: #fff;
+      min-height: 420px;
+      background: linear-gradient(145deg, #202a34, #0f1419);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .price-tag {
+      display: inline-block;
+      padding: 10px 14px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.12);
+      font-size: 0.9rem;
+      margin-bottom: 18px;
+    }
+
+    .price-tag strong {
+      display: block;
+      font-size: 1.35rem;
+      margin-top: 4px;
+    }
+
+    .hero-card p {
+      max-width: 250px;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .car {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 34px;
+      height: 180px;
+    }
+
+    .car-body {
+      position: absolute;
+      left: 50%;
+      bottom: 28px;
+      transform: translateX(-50%);
+      width: min(340px, 92%);
+      height: 98px;
+      border-radius: 32px 72px 20px 24px;
+      background: linear-gradient(135deg, #d95d2c, #932d0c);
+    }
+
+    .car-body::before {
+      content: "";
+      position: absolute;
+      left: 60px;
+      top: -36px;
+      width: 140px;
+      height: 54px;
+      border-radius: 28px 32px 8px 8px;
+      background: linear-gradient(160deg, #e7eff8, #a9bfd1);
+    }
+
+    .wheel,
+    .wheel::before {
+      position: absolute;
+      bottom: -20px;
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #6f7983 0 25%, #14191f 26% 100%);
+      content: "";
+    }
+
+    .wheel {
+      left: 64px;
+    }
+
+    .wheel::before {
+      left: 180px;
+      bottom: 0;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      padding-bottom: 36px;
+    }
+
+    .card {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #fff;
+    }
+
+    .card h2,
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .footer {
+      padding-bottom: 28px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 16px, 100%);
+        margin: 8px;
+      }
+
+      .header,
+      .hero,
+      .content,
+      .footer {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .nav {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <a class="logo" href="#">AutoBid</a>
+      <nav class="nav">
+        <a href="#cars">Cars</a>
+        <a href="#auctions">Auctions</a>
+        <a href="#sell">Sell</a>
+      </nav>
+    </header>
+
+    <section class="hero">
+      <div>
+        <span class="tag">Car sales and auctions</span>
+        <h1>Buy and sell cars in one simple place.</h1>
+        <p class="lead">
+          Browse verified vehicles, join live auctions, and sell your car to real buyers
+          with a fast, clean process.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="#cars">Browse Cars</a>
+          <a class="button secondary" href="#sell">Sell Your Car</a>
+        </div>
+        <div class="stats">
+          <div class="stat">
+            <strong>850+</strong>
+            <span>cars listed</span>
+          </div>
+          <div class="stat">
+            <strong>24 hrs</strong>
+            <span>auction average</span>
+          </div>
+          <div class="stat">
+            <strong>97%</strong>
+            <span>verified sellers</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="hero-card">
+        <div class="price-tag">
+          Current top bid
+          <strong>$19,800</strong>
+        </div>
+        <h2>Featured Car</h2>
+        <p>2021 BMW 330i with low mileage, clean title, and active bidding today.</p>
+        <div class="car" aria-hidden="true">
+          <div class="car-body">
+            <div class="wheel"></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="content">
+      <article class="card" id="cars">
+        <h3>Featured Listings</h3>
+        <div class="item">
+          <div>
+            <strong>2022 Toyota Camry</strong>
+            <div class="muted">29,000 miles • automatic</div>
+          </div>
+          <strong>$24,900</strong>
+        </div>
+        <div class="item">
+          <div>
+            <strong>2020 Ford Mustang</strong>
+            <div class="muted">18,400 miles • turbo</div>
+          </div>
+          <strong>$27,500</strong>
+        </div>
+        <div class="item">
+          <div>
+            <strong>2021 Honda CR-V</strong>
+            <div class="muted">34,100 miles • AWD</div>
+          </div>
+          <strong>$26,200</strong>
+        </div>
+      </article>
+
+      <article class="card" id="auctions">
+        <h3>How It Works</h3>
+        <div class="item">
+          <strong>1. Register</strong>
+          <span class="muted">Create an account</span>
+        </div>
+        <div class="item">
+          <strong>2. Bid or buy</strong>
+          <span class="muted">Join live listings</span>
+        </div>
+        <div class="item">
+          <strong>3. Close the deal</strong>
+          <span class="muted">Secure payment fast</span>
+        </div>
+      </article>
+
+      <article class="card" id="sell">
+        <h3>Sell Your Car</h3>
+        <p class="muted">
+          Submit your car details, photos, mileage, and target price to start selling today.
+        </p>
+        <p><strong>sales@autobid.com</strong></p>
+        <p><strong>(555) 012-7788</strong></p>
+      </article>
+    </section>
+
+    <footer class="footer">
+      Simple landing page for car sales and auctions.
+    </footer>
+  </main>
+</body>
+</html>
